@@ -1,9 +1,8 @@
 import axios from 'axios'
-const baseURL = '/v1/games'
 
-const getAll = async () => {
-    const response = await axios.get(baseURL)
-    return response.data
-}
-
-export default {getAll}
+export default axios.create({
+    baseURL : "http://localhost:4001/v1",
+    headers : {
+        "Content-type": "application/json"
+    }
+});
