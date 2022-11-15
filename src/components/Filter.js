@@ -3,6 +3,7 @@ import { useQuery } from 'react-query';
 import gameService  from '../services/gameService'
 import GameTable from './GameTable'
 import Notification from './Notification';
+import Button from 'react-bootstrap/Button';
 import '../App.css'
 
 const Filter = () => {
@@ -165,58 +166,56 @@ const Filter = () => {
       }
   
     const clearGetOutput =() => {
-      setMessage(null);
+        setgetGames([])
+        setMessage(null);
     }
 
     return(
-    <div className='card'>
-        <div className='card-header input-group-sm'> GET Request </div>
-        <div className='card-body'>
-          <div className='input-group input-group-sm'>
-            <button className='btn btn-sm btn-primary' onClick={getAllData}>
+    <div>
+        <div> GET Request </div>
+        <div>
+          <div>
+            <Button size='sm' onClick={getAllData}>
               Get All
-            </button>
+            </Button>
             <input
               type="text"
               value={getName}
               onChange={(e) => setGetName(e.target.value)}
-              className='form-control ml-2'
               placeholder='Name'
               />
-            <div className='input-group-append'>
-              <button className="btn btn-sm btn-primary" onClick={getDataByName}>
+            <div>
+              <Button size='sm' onClick={getDataByName}>
                 Get by Name
-              </button>
+              </Button>
             </div>
             <input
                 type="text"
                 value={getGenre}
                 onChange={(e) => setGetGenre(e.target.value)}
-                className="form-control ml-2"
                 placeholder="Genre"
                 />
-            <div className="input-group-append">
-              <button className="btn btn-sm btn-primary" onClick={getDataByGenre}>
+            <div>
+              <Button size='sm' onClick={getDataByGenre}>
                 Find By Genre
-              </button>
+              </Button>
             </div>
             <input
                 type="text"
                 value={getPublisher}
                 onChange={(e) => setGetPublisher(e.target.value)}
-                className="form-control ml-2"
                 placeholder="Publisher"
                 />
-            <div className="input-group-append">
-              <button className="btn btn-sm btn-primary" onClick={getDataByPublisher}>
+            <div>
+              <Button size='sm' onClick={getDataByPublisher}>
                 Find By Publisher
-              </button>
+              </Button>
             </div>
-            <button className="btn btn-sm btn-warning ml-2" onClick={clearGetOutput}>
+            <Button size='sm' onClick={clearGetOutput}>
               Clear
-            </button>
+            </Button>
           </div>
-          <Notification message={message} />
+          {message === "loading..." ? null : <Notification message={message} />}
           <GameTable games={getGames} />
           
         </div>

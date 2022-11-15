@@ -1,12 +1,12 @@
 import React from 'react'
 import Game from './Game'
+import Table from 'react-bootstrap/Table'
 import '../App.css'
 
 const GameTable = ({games}) => {
     return (
-        <div className="table-wrapper">
-            <h2>Games</h2>
-                <table className='fl-table'>
+        <div>
+            <Table striped bordered hover>
                 <thead>
                     <tr>
                         <th> Name </th>
@@ -18,11 +18,11 @@ const GameTable = ({games}) => {
                     {
                         games.map(game =>
                             <Game key={game.id} game={game} />
-                        )
-                    }     
+                            )
+                        }     
                 </tbody>
-                </table>
-        </div> 
+            </Table>
+        </div>
     )
 }
 export default GameTable;

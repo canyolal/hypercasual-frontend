@@ -1,11 +1,12 @@
 import React from 'react'
+import Alert from 'react-bootstrap/Alert'
 
 const Notification = ({ message }) => {
   if (message !== null) {
     return (
-      <div className="outer notification">
+      <Alert>
         {message}
-      </div>
+      </Alert>
     )
   }
   else {
