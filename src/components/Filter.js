@@ -4,6 +4,9 @@ import gameService  from '../services/gameService'
 import GameTable from './GameTable'
 import Notification from './Notification';
 import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Form from 'react-bootstrap/Form'
+import InputGroup from 'react-bootstrap/InputGroup'
 import '../App.css'
 
 const Filter = () => {
@@ -164,62 +167,78 @@ const Filter = () => {
           }
         }
       }
-  
-    const clearGetOutput =() => {
-        setgetGames([])
-        setMessage(null);
-    }
+
+      useEffect(() => {
+        if (getGenre != null){
+          getDataByGenre()
+        }
+      },[getGenre]);
+
+      useEffect(() => {
+        if (getPublisher != null){
+          getDataByPublisher()
+        }
+      },[getPublisher])
+
+      useEffect(() => {
+        if (getName != null){
+          getDataByName()
+        }
+      },[getName])
 
     return(
-    <div>
+    <>
         <div> GET Request </div>
         <div>
-          <div>
-            <Button size='sm' onClick={getAllData}>
-              Get All
-            </Button>
-            <input
-              type="text"
-              value={getName}
-              onChange={(e) => setGetName(e.target.value)}
-              placeholder='Name'
-              />
-            <div>
+          <Button size='sm' onClick={getAllData}>
+            Get All
+          </Button>
+          <br />
+          <ButtonGroup className='mb-2' size='sm'>
+            <InputGroup className='mb-3'>
+              <Form.Control placeholder='Name' type='text' value={getName} onChange={(e) => setGetName(e.target.value)} />
               <Button size='sm' onClick={getDataByName}>
-                Get by Name
+                Find by Name
               </Button>
-            </div>
-            <input
-                type="text"
-                value={getGenre}
-                onChange={(e) => setGetGenre(e.target.value)}
-                placeholder="Genre"
-                />
-            <div>
+            </InputGroup>
+
+            <Form.Select
+              onChange={(e) => setGetGenre(e.target.value)}
+              >
+              <option value='null'>Select Genre</option>
+              <option value='simulation'>Simulation</option>
+              <option value='action'>Action</option>
+              <option value='casual'>Casual</option>
+            </Form.Select>
+
+            <Form.Select
+              onChange={(e) => setGetPublisher(e.target.value)}
+              >
+              <option value='null'>Select Publisher</option>
+              <option value='Voodoo'>Voodoo</option>
+              <option value='Good Job Games'>Good Job Games</option>
+              <option value='Ketchapp'>Ketchapp</option>
+            </Form.Select>
+
+            {/* <InputGroup className='mb-3'>
+              <Form.Control placeholder='Genre' type='text' value={getGenre} onChange={(e) => setGetGenre(e.target.value)} />
               <Button size='sm' onClick={getDataByGenre}>
-                Find By Genre
+                Find by Genre
               </Button>
-            </div>
-            <input
-                type="text"
-                value={getPublisher}
-                onChange={(e) => setGetPublisher(e.target.value)}
-                placeholder="Publisher"
-                />
-            <div>
+            </InputGroup> */}
+
+            {/* <InputGroup className='mb-3'>
+              <Form.Control placeholder='Publisher' type='text' value={getPublisher} onChange={(e) => setGetPublisher(e.target.value)} />
               <Button size='sm' onClick={getDataByPublisher}>
-                Find By Publisher
+                Find by Publisher
               </Button>
-            </div>
-            <Button size='sm' onClick={clearGetOutput}>
-              Clear
-            </Button>
-          </div>
+            </InputGroup> */}
+
+          </ButtonGroup>
           {message === "loading..." ? null : <Notification message={message} />}
-          <GameTable games={getGames} />
-          
+          <GameTable games={getGames} />  
         </div>
-      </div>
+      </>
       )
     }
 
