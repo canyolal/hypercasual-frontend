@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react'
-import { useQuery } from "react-query";
+import { useQuery } from 'react-query';
 import gameService  from '../services/gameService'
-import Game from './Game'
+import GameTable from './GameTable'
+import Notification from './Notification';
+import '../App.css'
 
 const Filter = () => {
 
     const [getName, setGetName] = useState("")
     const [getGenre, setGetGenre] = useState("")
     const [getPublisher, setGetPublisher] = useState("")
-    const [metadata,setMetadata] = useState(null)
+    const [metadata,setMetadata] = useState([])
+    const [message , setMessage] = useState(null)
   
-    const [getResult, setGetResult] = useState(null)
+    const [getGames, setgetGames] = useState([])
   
     const fortmatResponse = (res) => {
       return JSON.stringify(res,null, 2);
@@ -23,28 +26,30 @@ const Filter = () => {
       {
         enabled: false,
         onSuccess: (res) => {
-          const result = {
-            status : res.status + "-" + res.statusText,
-            headers: res.headers,
-            data: res.data,
-          };
-          setGetResult(fortmatResponse(result));
+            const result = {
+              status : res.status + "-" + res.statusText,
+              headers: res.headers,
+              data: res.data,
+            };
+            setMetadata(fortmatResponse(result.data.metadata));
+            setgetGames(result.data.games);
+            setMessage(null)
         },
         onError : (err) => {
-          setGetResult(fortmatResponse(err.response?.data || err));
+          setMessage(fortmatResponse(err.response?.data || err));
         },
       }
     );
   
     useEffect(() => {
-      if (isLoadingGames) setGetResult("loading...");
+      if (isLoadingGames) setMessage("loading...");
     },[isLoadingGames]);
   
     function getAllData() {
       try{
         getAllGames();
       }catch(err) {
-        setGetResult(fortmatResponse(err));
+        setMessage(fortmatResponse(err));
       }
     }
   
@@ -56,21 +61,23 @@ const Filter = () => {
       {
         enabled: false,
         onSuccess: (res) => {
-          const result = {
-            status : res.status + "-" + res.statusText,
-            headers: res.headers,
-            data: res.data,
-          };
-          setGetResult(fortmatResponse(result));
+            const result = {
+              status : res.status + "-" + res.statusText,
+              headers: res.headers,
+              data: res.data,
+            };
+            setMetadata(fortmatResponse(result.data.metadata));
+            setgetGames(result.data.games);
+            setMessage(null)
         },
         onError : (err) => {
-          setGetResult(fortmatResponse(err.response?.data || err));
+          setMessage(fortmatResponse(err.response?.data || err));
         },
       }
     );
   
     useEffect(() => {
-      if (isLoadingGame) setGetResult("loading...");
+      if (isLoadingGame) setMessage("loading...");
     }, [isLoadingGame]);
   
     function getDataByName() {
@@ -78,7 +85,7 @@ const Filter = () => {
         try {
           getGamesByName();
         } catch (err) {
-          setGetResult(fortmatResponse(err));
+          setMessage(fortmatResponse(err));
         }
       }
     }
@@ -91,24 +98,23 @@ const Filter = () => {
       {
         enabled: false,
         onSuccess: (res) => {
-          const result = res.data.games
-          const md = res.data.metadata
-          // const result = {
-          //   status : res.status + "-" + res.statusText,
-          //   headers: res.headers,
-          //   data: res.data,
-          // };
-          setMetadata(fortmatResponse(md));
-          setGetResult(fortmatResponse(result));
+          const result = {
+            status : res.status + "-" + res.statusText,
+            headers: res.headers,
+            data: res.data,
+          };
+          setMetadata(fortmatResponse(result.data.metadata));
+          setgetGames(result.data.games);
+          setMessage(null)
         },
         onError : (err) => {
-          setGetResult(fortmatResponse(err.response?.data || err));
+          setMessage(fortmatResponse(err.response?.data || err));
         },
       }
     );
   
     useEffect(() => {
-      if (isSearchingGame) setGetResult("loading...");
+      if (isSearchingGame) setMessage("loading...");
     }, [isSearchingGame]);
   
     function getDataByGenre() {
@@ -116,15 +122,51 @@ const Filter = () => {
         try {
           findGamesByGenre();
         } catch (err) {
-          setGetResult(fortmatResponse(err));
+          setMessage(fortmatResponse(err));
         }
       }
     }
+
+    const {isLoading: isLookingGame, refetch: findGamesByPublisher} = useQuery(
+        "query-games-by-publisher",
+        async () => {
+          return await gameService.get(`/games?publisher_name=${getPublisher}`);
+        },
+        {
+          enabled: false,
+          onSuccess: (res) => {
+            const result = {
+              status : res.status + "-" + res.statusText,
+              headers: res.headers,
+              data: res.data,
+            };
+            setMetadata(fortmatResponse(result.data.metadata));
+            setgetGames(result.data.games);
+            setMessage(null)
+          },
+          onError : (err) => {
+            setMessage(fortmatResponse(err.response?.data || err));
+          },
+        }
+      );
+    
+      useEffect(() => {
+        if (isLookingGame) setMessage("loading...");
+      }, [isLookingGame]);
+    
+      function getDataByPublisher() {
+        if (getPublisher) {
+          try {
+            findGamesByPublisher();
+          } catch (err) {
+            setMessage(fortmatResponse(err));
+          }
+        }
+      }
   
     const clearGetOutput =() => {
-      setGetResult(null);
+      setMessage(null);
     }
-
 
     return(
     <div className='card'>
@@ -153,20 +195,30 @@ const Filter = () => {
                 className="form-control ml-2"
                 placeholder="Genre"
                 />
-             <div className="input-group-append">
+            <div className="input-group-append">
               <button className="btn btn-sm btn-primary" onClick={getDataByGenre}>
                 Find By Genre
+              </button>
+            </div>
+            <input
+                type="text"
+                value={getPublisher}
+                onChange={(e) => setGetPublisher(e.target.value)}
+                className="form-control ml-2"
+                placeholder="Publisher"
+                />
+            <div className="input-group-append">
+              <button className="btn btn-sm btn-primary" onClick={getDataByPublisher}>
+                Find By Publisher
               </button>
             </div>
             <button className="btn btn-sm btn-warning ml-2" onClick={clearGetOutput}>
               Clear
             </button>
           </div>
-          {getResult && (
-              <div className='alert alert-secondary mt-2' role='alert'>
-              <pre>{getResult}</pre>
-            </div>
-          )}
+          <Notification message={message} />
+          <GameTable games={getGames} />
+          
         </div>
       </div>
       )
