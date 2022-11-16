@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { useQuery } from 'react-query';
 import Form from 'react-bootstrap/Form'
 import Stack from 'react-bootstrap/Stack'
+import Pagination from 'react-bootstrap/Pagination'
 
 import gameService  from '../services/gameService'
 import GameTable from './GameTable'
@@ -9,6 +9,7 @@ import Notification from './Notification';
 import GenreForm from './GenreForm';
 import PublisherForm from './PublisherForm';
 import PageSizeForm from './PageSizeForm';
+import PaginationElement from './PaginationElement'
 
 const Filter = () => {
 
@@ -18,8 +19,28 @@ const Filter = () => {
   const [metadata,setMetadata] = useState([])
   const [message , setMessage] = useState(null)
   const [pageSize, setPageSize] = useState(20)
+  const [pageNum, setPageNum] = useState(1)
+  const [pageCount, setPageCount] = useState(1)
   
-  const [getGames, setgetGames] = useState([])
+  const [Games, setGames] = useState([])
+
+  var pages =[]
+  const updatePagination = () => {
+    pages = []
+    for (let number = 1; number <= metadata.last_page; number++) {
+      pages.push(
+        <Pagination.Item
+          key={number}
+          active={number === metadata.current_page}
+          onClick={() => paginate(number)}
+        >
+          {number}
+        </Pagination.Item>
+      );
+    }
+  }
+  updatePagination()
+  
 
   const fortmatResponse = (res) => {
     return JSON.stringify(res,null, 2);
@@ -37,36 +58,46 @@ const Filter = () => {
     console.log("qryString: ",qryString)
     return qryString
   }
-  
-  const {isLoading: isQueryingGame, refetch: findGamesWithQuery} = useQuery(
-    "query-games-by-query",
-    async () => {
-      let qry =serializeQuery({name: Name, genre: Genre, publisher_name : Publisher, page_size : pageSize})
-      return await gameService.get(`/games?${qry}`);
-    },
-    {
-      enabled: false,
-      onSuccess: (res) => {
-        const result = {
-          status : res.status + "-" + res.statusText,
-          headers: res.headers,
-          data: res.data,
-        };
-        setMetadata(result.data.metadata);
-        setgetGames(result.data.games);
+
+  const paginate = (number) => {
+    let qry = serializeQuery({page: number, name : Name, genre: Genre, publisher_name: Publisher, page_size: pageSize})
+    gameService.get(`/games?${qry}`)
+    .then(res => {
+      if (!res.data.games){
+        setGames(res.data.games)
+        setMetadata(res.data.metadata)
+        setPageNum(number)
+        setPageSize(res.data.metadata.page_size)
         setMessage(null)
-      },
-      onError : (err) => {
-        setMessage(fortmatResponse(err.response?.data || err));
-      },
-    }
-  );
-    
-  useEffect(() => {
-   if (isQueryingGame) setMessage("loading...");
-  }, [isQueryingGame]);
-    
-  
+      } else {
+        setGames(res.data.games)
+        setPageCount(res.data.metadata.last_page)
+        setMetadata(res.data.metadata)
+        setPageSize(res.data.metadata.page_size)
+      }
+    })
+  }
+
+  const findGamesWithQuery = () => {
+    let qry =serializeQuery({name: Name, genre: Genre, publisher_name : Publisher, page_size : pageSize})
+    gameService.get(`/games?${qry}`)
+    .then(res => {
+      if (!res.data.games){
+        setGames(res.data.games)
+        setMetadata(res.data.metadata)
+        setPageSize(20)
+        setPageNum(1)
+        setPageCount(res.data.metadata.last_page)
+        setMessage(null)
+      } else{
+        setGames(res.data.games)
+        setPageCount(res.data.metadata.last_page)
+        setMetadata(res.data.metadata)
+        setPageSize(res.data.metadata.page_size)
+        setPageNum(1)
+      }
+    })
+  }
 
   useEffect(() => {
     const getDataByQuery = () => {
@@ -76,9 +107,21 @@ const Filter = () => {
         setMessage(fortmatResponse(err));
       }
   }
-    if (Name || Genre || Publisher || pageSize)
-      getDataByQuery()
+    getDataByQuery()
   },[Name,Genre,Publisher,pageSize]);
+
+  useEffect(() => {
+      let qry = serializeQuery({page: pageNum, name : Name, genre: Genre, publisher_name: Publisher, page_size: pageSize})
+      gameService.get(`/games?${qry}`)
+      .then(res => {
+        setGames(res.data.games)
+        setMetadata(res.data.metadata)
+        setPageNum(pageNum)
+        setPageCount(res.data.metadata.last_page)
+        setPageSize(res.data.metadata.page_size)
+        setMessage(null)
+      })
+  }, [pageNum])
 
     return(
     <>
@@ -92,8 +135,14 @@ const Filter = () => {
           <PageSizeForm setPageSize={setPageSize} />
         </Stack>
 
-          {message === "loading..." ? null : <Notification message={message} />}
-          <GameTable games={getGames} />  
+        {message === "loading..." ? null : <Notification message={message} />}
+        <GameTable games={Games} />  
+        <PaginationElement
+          pagesCount={pageCount}
+          currentPage={pageNum}
+          setPageNum={setPageNum} 
+          alwaysShown={false}/>
+
         </div>
       </>
       )
