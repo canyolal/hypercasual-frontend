@@ -1,8 +1,10 @@
-import Nav from 'react-bootstrap/Nav';
-
 const Home = () => {
-    return (
-
+    return(
+        <>
+            <p>
+                Home Page
+            </p>
+        </>
     )
 }
 

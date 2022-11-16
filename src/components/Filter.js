@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { useQuery } from 'react-query';
+import Form from 'react-bootstrap/Form'
+import Stack from 'react-bootstrap/Stack'
+
 import gameService  from '../services/gameService'
 import GameTable from './GameTable'
 import Notification from './Notification';
-import Form from 'react-bootstrap/Form'
-import Col from 'react-bootstrap/Col'
-import Row from 'react-bootstrap/Row'
-import Stack from 'react-bootstrap/Stack'
-import '../App.css'
 import GenreForm from './GenreForm';
 import PublisherForm from './PublisherForm';
 import PageSizeForm from './PageSizeForm';
@@ -54,7 +52,7 @@ const Filter = () => {
           headers: res.headers,
           data: res.data,
         };
-        setMetadata(fortmatResponse(result.data.metadata));
+        setMetadata(result.data.metadata);
         setgetGames(result.data.games);
         setMessage(null)
       },
