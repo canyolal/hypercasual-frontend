@@ -5,11 +5,11 @@ import '../App.css'
 
 const GameTable = ({games}) => {
     return (
-        <div>
+        <>
             <Table striped bordered hover>
                 <thead>
                     <tr>
-                        <th> Name </th>
+                        <th> Game </th>
                         <th> Genre </th>
                         <th> Publisher </th>
                     </tr>
@@ -22,7 +22,7 @@ const GameTable = ({games}) => {
                         }     
                 </tbody>
             </Table>
-        </div>
+        </>
     )
 }
 export default GameTable;

@@ -3,238 +3,97 @@ import { useQuery } from 'react-query';
 import gameService  from '../services/gameService'
 import GameTable from './GameTable'
 import Notification from './Notification';
-import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Form from 'react-bootstrap/Form'
-import InputGroup from 'react-bootstrap/InputGroup'
+import Col from 'react-bootstrap/Col'
+import Row from 'react-bootstrap/Row'
+import Stack from 'react-bootstrap/Stack'
 import '../App.css'
+import GenreForm from './GenreForm';
+import PublisherForm from './PublisherForm';
+import PageSizeForm from './PageSizeForm';
 
 const Filter = () => {
 
-    const [getName, setGetName] = useState("")
-    const [getGenre, setGetGenre] = useState("")
-    const [getPublisher, setGetPublisher] = useState("")
-    const [metadata,setMetadata] = useState([])
-    const [message , setMessage] = useState(null)
+  const [Name, setName] = useState("")
+  const [Genre, setGenre] = useState("")
+  const [Publisher, setPublisher] = useState("")
+  const [metadata,setMetadata] = useState([])
+  const [message , setMessage] = useState(null)
+  const [pageSize, setPageSize] = useState(20)
   
-    const [getGames, setgetGames] = useState([])
-  
-    const fortmatResponse = (res) => {
-      return JSON.stringify(res,null, 2);
-    }
-  
-    const {isLoading: isLoadingGames, refetch: getAllGames} = useQuery("query-games",
-      async() => {
-        return await gameService.get("/games");
-      },
-      {
-        enabled: false,
-        onSuccess: (res) => {
-            const result = {
-              status : res.status + "-" + res.statusText,
-              headers: res.headers,
-              data: res.data,
-            };
-            setMetadata(fortmatResponse(result.data.metadata));
-            setgetGames(result.data.games);
-            setMessage(null)
-        },
-        onError : (err) => {
-          setMessage(fortmatResponse(err.response?.data || err));
-        },
+  const [getGames, setgetGames] = useState([])
+
+  const fortmatResponse = (res) => {
+    return JSON.stringify(res,null, 2);
+  }
+
+  const serializeQuery = (queryParams) =>{
+    const arr = []
+    for (let key in queryParams){
+      if (queryParams[key] === ""){
+        continue
       }
-    );
+      arr.push(`${key}=${queryParams[key]}`)
+    }
+    const qryString = arr.join("&")
+    console.log("qryString: ",qryString)
+    return qryString
+  }
   
-    useEffect(() => {
-      if (isLoadingGames) setMessage("loading...");
-    },[isLoadingGames]);
+  const {isLoading: isQueryingGame, refetch: findGamesWithQuery} = useQuery(
+    "query-games-by-query",
+    async () => {
+      let qry =serializeQuery({name: Name, genre: Genre, publisher_name : Publisher, page_size : pageSize})
+      return await gameService.get(`/games?${qry}`);
+    },
+    {
+      enabled: false,
+      onSuccess: (res) => {
+        const result = {
+          status : res.status + "-" + res.statusText,
+          headers: res.headers,
+          data: res.data,
+        };
+        setMetadata(fortmatResponse(result.data.metadata));
+        setgetGames(result.data.games);
+        setMessage(null)
+      },
+      onError : (err) => {
+        setMessage(fortmatResponse(err.response?.data || err));
+      },
+    }
+  );
+    
+  useEffect(() => {
+   if (isQueryingGame) setMessage("loading...");
+  }, [isQueryingGame]);
+    
   
-    function getAllData() {
-      try{
-        getAllGames();
-      }catch(err) {
+
+  useEffect(() => {
+    const getDataByQuery = () => {
+      try {
+        findGamesWithQuery();
+      } catch (err) {
         setMessage(fortmatResponse(err));
       }
-    }
-  
-    const {isLoading: isLoadingGame, refetch: getGamesByName} = useQuery(
-      "query-games-by-name",
-      async () => {
-        return await gameService.get(`/games?name=${getName}`);
-      },
-      {
-        enabled: false,
-        onSuccess: (res) => {
-            const result = {
-              status : res.status + "-" + res.statusText,
-              headers: res.headers,
-              data: res.data,
-            };
-            setMetadata(fortmatResponse(result.data.metadata));
-            setgetGames(result.data.games);
-            setMessage(null)
-        },
-        onError : (err) => {
-          setMessage(fortmatResponse(err.response?.data || err));
-        },
-      }
-    );
-  
-    useEffect(() => {
-      if (isLoadingGame) setMessage("loading...");
-    }, [isLoadingGame]);
-  
-    function getDataByName() {
-      if (getName) {
-        try {
-          getGamesByName();
-        } catch (err) {
-          setMessage(fortmatResponse(err));
-        }
-      }
-    }
-  
-    const {isLoading: isSearchingGame, refetch: findGamesByGenre} = useQuery(
-      "query-games-by-genre",
-      async () => {
-        return await gameService.get(`/games?genre=${getGenre}`);
-      },
-      {
-        enabled: false,
-        onSuccess: (res) => {
-          const result = {
-            status : res.status + "-" + res.statusText,
-            headers: res.headers,
-            data: res.data,
-          };
-          setMetadata(fortmatResponse(result.data.metadata));
-          setgetGames(result.data.games);
-          setMessage(null)
-        },
-        onError : (err) => {
-          setMessage(fortmatResponse(err.response?.data || err));
-        },
-      }
-    );
-  
-    useEffect(() => {
-      if (isSearchingGame) setMessage("loading...");
-    }, [isSearchingGame]);
-  
-    function getDataByGenre() {
-      if (getGenre) {
-        try {
-          findGamesByGenre();
-        } catch (err) {
-          setMessage(fortmatResponse(err));
-        }
-      }
-    }
-
-    const {isLoading: isLookingGame, refetch: findGamesByPublisher} = useQuery(
-        "query-games-by-publisher",
-        async () => {
-          return await gameService.get(`/games?publisher_name=${getPublisher}`);
-        },
-        {
-          enabled: false,
-          onSuccess: (res) => {
-            const result = {
-              status : res.status + "-" + res.statusText,
-              headers: res.headers,
-              data: res.data,
-            };
-            setMetadata(fortmatResponse(result.data.metadata));
-            setgetGames(result.data.games);
-            setMessage(null)
-          },
-          onError : (err) => {
-            setMessage(fortmatResponse(err.response?.data || err));
-          },
-        }
-      );
-    
-      useEffect(() => {
-        if (isLookingGame) setMessage("loading...");
-      }, [isLookingGame]);
-    
-      function getDataByPublisher() {
-        if (getPublisher) {
-          try {
-            findGamesByPublisher();
-          } catch (err) {
-            setMessage(fortmatResponse(err));
-          }
-        }
-      }
-
-      useEffect(() => {
-        if (getGenre != null){
-          getDataByGenre()
-        }
-      },[getGenre]);
-
-      useEffect(() => {
-        if (getPublisher != null){
-          getDataByPublisher()
-        }
-      },[getPublisher])
-
-      useEffect(() => {
-        if (getName != null){
-          getDataByName()
-        }
-      },[getName])
+  }
+    if (Name || Genre || Publisher || pageSize)
+      getDataByQuery()
+  },[Name,Genre,Publisher,pageSize]);
 
     return(
     <>
-        <div> GET Request </div>
+        <h1> Top Publisher's Hypercasual Games </h1>
         <div>
-          <Button size='sm' onClick={getAllData}>
-            Get All
-          </Button>
-          <br />
-          <ButtonGroup className='mb-2' size='sm'>
-            <InputGroup className='mb-3'>
-              <Form.Control placeholder='Name' type='text' value={getName} onChange={(e) => setGetName(e.target.value)} />
-              <Button size='sm' onClick={getDataByName}>
-                Find by Name
-              </Button>
-            </InputGroup>
 
-            <Form.Select
-              onChange={(e) => setGetGenre(e.target.value)}
-              >
-              <option value='null'>Select Genre</option>
-              <option value='simulation'>Simulation</option>
-              <option value='action'>Action</option>
-              <option value='casual'>Casual</option>
-            </Form.Select>
+        <Stack direction='horizontal' gap={2}>
+          <Form.Control className='form-control-sm' placeholder='Game' type='text' value={Name} onChange={(e) => setName(e.target.value)} />
+          <GenreForm setGenre={setGenre}/>
+          <PublisherForm setPublisher={setPublisher} />
+          <PageSizeForm setPageSize={setPageSize} />
+        </Stack>
 
-            <Form.Select
-              onChange={(e) => setGetPublisher(e.target.value)}
-              >
-              <option value='null'>Select Publisher</option>
-              <option value='Voodoo'>Voodoo</option>
-              <option value='Good Job Games'>Good Job Games</option>
-              <option value='Ketchapp'>Ketchapp</option>
-            </Form.Select>
-
-            {/* <InputGroup className='mb-3'>
-              <Form.Control placeholder='Genre' type='text' value={getGenre} onChange={(e) => setGetGenre(e.target.value)} />
-              <Button size='sm' onClick={getDataByGenre}>
-                Find by Genre
-              </Button>
-            </InputGroup> */}
-
-            {/* <InputGroup className='mb-3'>
-              <Form.Control placeholder='Publisher' type='text' value={getPublisher} onChange={(e) => setGetPublisher(e.target.value)} />
-              <Button size='sm' onClick={getDataByPublisher}>
-                Find by Publisher
-              </Button>
-            </InputGroup> */}
-
-          </ButtonGroup>
           {message === "loading..." ? null : <Notification message={message} />}
           <GameTable games={getGames} />  
         </div>
