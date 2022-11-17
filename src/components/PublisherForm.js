@@ -33,6 +33,8 @@ const PublisherForm = ({setPublisher}) => {
               <option value='Azur Games'>Azur Games</option>
               <option value='Gismart'>Gismart</option>
               <option value='Rollic'>Rollic</option>
+              <option value='Matchingham'>Matchingham</option>
+              <option value='Miniclip'>Miniclip</option>
         </Form.Select>
     )
 }
