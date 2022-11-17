@@ -3,10 +3,9 @@ import Form from 'react-bootstrap/Form'
 const PublisherForm = ({setPublisher}) => {
 
     return (
-        <Form.Control
-              as='select'
+        <Form.Select
               onChange={(e) => setPublisher(e.target.value)}
-              className='form-inline form-control-sm'
+              className='form-inline form-select-sm'
               >
               <option value=''>Select Publisher</option>
               <option value='Voodoo'>Voodoo</option>
@@ -34,7 +33,7 @@ const PublisherForm = ({setPublisher}) => {
               <option value='Azur Games'>Azur Games</option>
               <option value='Gismart'>Gismart</option>
               <option value='Rollic'>Rollic</option>
-        </Form.Control>
+        </Form.Select>
     )
 }
 

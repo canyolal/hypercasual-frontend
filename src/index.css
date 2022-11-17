@@ -1,8 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Overpass:wght@900&display=swap');
+
 body {
-  margin: 0;
+  margin-top: 0;
+  margin-left: 20px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+    sans-serif, 'Roboto Mono';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -10,4 +14,76 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+footer {
+  background-color: #ecedf0;
+  text-align: center;
+  margin-top: auto;
+  padding: 5px;
+}
+
+p.home {
+  font-family: "Roboto Mono", monospace;
+  font-weight: 400;
+  text-align: center;
+  margin-left: 30%;
+  margin-right: 30%;
+}
+
+footer > a {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+h1 {
+  text-align: center;
+}
+
+.singlePages{
+  margin-left: 15%;
+  margin-right: 15%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.NavBar {
+  background-color: #ecedf0;
+  font-family: "Overpass", sans-serif;
+  font-weight: 700;
+  font-style: oblique;
+}
+
+.gameTable {
+  font-family: "Roboto Mono", monospace;
+  font-weight: 700;
+}
+
+p.gamesComponent {
+  font-family: "Roboto Mono", monospace;
+  font-weight: 400;
+  text-align: center;
+  margin-left: 25%;
+  margin-right: 25%;
+}
+
+.subscribeGames {
+  text-align :center;
+}
+
+input.subscribeToGames{
+  border: 1px solid #ecedf0;
+  border-radius: 12px;
+  cursor: text;
+}
+
+button.subscribeToGames{
+  border: 1px solid #ecedf0;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+button.subscribeToGames:hover{
+  background-color : #ecedf0;
 }

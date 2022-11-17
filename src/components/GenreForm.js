@@ -2,10 +2,9 @@ import Form from 'react-bootstrap/Form'
 
 const GenreForm = ({setGenre}) => {
     return (
-        <Form.Control
-            as='select'
+        <Form.Select
             onChange={(e) => setGenre(e.target.value)}
-            className='form-inline form-control-sm'
+            className='form-inline form-select-sm'
             >
             <option value=''>Select Genre</option>
             <option value='Action'>Action</option>
@@ -25,7 +24,7 @@ const GenreForm = ({setGenre}) => {
             <option value='Simulation'>Simulation</option>
             <option value='Trivia'>Trivia</option>
             <option value='Word'>Word</option>
-        </Form.Control>
+        </Form.Select>
     )
 }
 

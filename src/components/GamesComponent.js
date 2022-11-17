@@ -11,8 +11,9 @@ import GenreForm from './GenreForm';
 import PublisherForm from './PublisherForm';
 import PageSizeForm from './PageSizeForm';
 import PaginationElement from './PaginationElement'
+import SubscribeGames from './SubscribeGames'
 
-const GamesChart = () => {
+const GamesComponent = () => {
 
   const [Name, setName] = useState("")
   const [Genre, setGenre] = useState("")
@@ -107,8 +108,19 @@ const GamesChart = () => {
   }, [pageNum])
 
   return(
-    <>
+    <div class='singlePages'>
         <h1> Top Publisher's Hypercasual Games </h1>
+        <br />
+        <p className='gamesComponent'>
+          <span>
+            Top 25 Hypercasual mobile game publishers' titles database can be found here. 
+            You can subscribe to database and get notified when a new game is released!
+          </span>
+        </p>
+        <br />
+        <SubscribeGames />
+        <br />
+
         <Stack direction='horizontal' gap={2}>
           <Form.Control className='form-control-sm' placeholder='Game' type='text' value={Name} onChange={(e) => setName(e.target.value)} />
           <GenreForm setGenre={setGenre}/>
@@ -120,21 +132,20 @@ const GamesChart = () => {
         <GameTable games={Games} />  
         <Container>
           <Row>
-            <Col xs lg='2'></Col>
-            <Col>
+            <Col sm={9}>
               <PaginationElement
                 pagesCount={pageCount}
                 currentPage={pageNum}
                 setPageNum={setPageNum} 
                 alwaysShown={false}/>
             </Col>
-            <Col xs lg='2'>
+            <Col sm={3}>
               <PageSizeForm setPageSize={setPageSize} />            
             </Col>
           </Row>
         </Container>
-      </>
+      </div>
   )
 }
 
-export default GamesChart;
+export default GamesComponent;

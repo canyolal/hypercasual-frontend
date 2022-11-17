@@ -57,7 +57,7 @@ const PaginationElement = ({pagesCount,currentPage,setPageNum,alwaysShown = true
 
     if (!isPageNumberOutOfRange) {
       isPageNumberOutOfRange = true;
-      return <Pagination.Ellipsis className="pagination-sm muted pagination-circle" key={pageNumber} disbled={true} />;
+      return <Pagination.Ellipsis className="pagination-sm muted pagination-circle" key={pageNumber} disabled={true} />;
     }
 
     return null;
@@ -68,7 +68,7 @@ const PaginationElement = ({pagesCount,currentPage,setPageNum,alwaysShown = true
   return (
     <>
       {isPaginationShown && (
-        <Pagination>
+        <Pagination className='justify-content-start'>
           <Pagination.Prev
             className="pagination-sm pagination-circle"
             onClick={onPreviousPageClick}
