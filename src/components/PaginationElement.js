@@ -44,20 +44,20 @@ const PaginationElement = ({pagesCount,currentPage,setPageNum,alwaysShown = true
     ) {
       isPageNumberOutOfRange = false;
       return (
-        <Pagination.Item
-          className="pagination-sm"
-          key={pageNumber}
-          onClick={() => onPageNumberClick(pageNumber)}
-          active={pageNumber === currentPage}
-        >
-          {pageNumber}
-        </Pagination.Item>
+          <Pagination.Item
+            className="pagination-sm pagination-circle"
+            key={pageNumber}
+            onClick={() => onPageNumberClick(pageNumber)}
+            active={pageNumber === currentPage}
+            >
+            {pageNumber}
+          </Pagination.Item>
       );
     }
 
     if (!isPageNumberOutOfRange) {
       isPageNumberOutOfRange = true;
-      return <Pagination.Ellipsis className="pagination-sm muted" key={pageNumber} disbled={true} />;
+      return <Pagination.Ellipsis className="pagination-sm muted pagination-circle" key={pageNumber} disbled={true} />;
     }
 
     return null;
@@ -70,13 +70,13 @@ const PaginationElement = ({pagesCount,currentPage,setPageNum,alwaysShown = true
       {isPaginationShown && (
         <Pagination>
           <Pagination.Prev
-            className="pagination-sm"
+            className="pagination-sm pagination-circle"
             onClick={onPreviousPageClick}
             disabled={isCurrentPageFirst}
           />
           {pageNumbers}
           <Pagination.Next
-            className="pagination-sm"
+            className="pagination-sm pagination-circle"
             onClick={onNextPageClick}
             disabled={isCurrentPageLast}
           />
@@ -85,6 +85,4 @@ const PaginationElement = ({pagesCount,currentPage,setPageNum,alwaysShown = true
     </>
   );
 };
-
-
 export default PaginationElement;

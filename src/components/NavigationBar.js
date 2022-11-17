@@ -5,7 +5,7 @@ const NavigationBar = () => {
     return (
         <Nav variant='tabs'>
             <NavLink eventKey='1' as={Link} to="/">Home</NavLink>
-            <NavLink eventKey='2' as={Link} to="/games">HC Games</NavLink>
+            <NavLink eventKey='2' as={Link} to="/games">Hypercasual</NavLink>
         </Nav>
     )
 }
