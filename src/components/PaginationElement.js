@@ -31,7 +31,6 @@ const PaginationElement = ({pagesCount,currentPage,setPageNum,alwaysShown = true
 
   let isPageNumberOutOfRange;
 
-  console.log("pagesCount: ",pagesCount)
   const pageNumbers = [...new Array(pagesCount)].map((_, index) => {
     const pageNumber = index + 1;
     const isPageNumberFirst = pageNumber === 1;
@@ -46,6 +45,7 @@ const PaginationElement = ({pagesCount,currentPage,setPageNum,alwaysShown = true
       isPageNumberOutOfRange = false;
       return (
         <Pagination.Item
+          className="pagination-sm"
           key={pageNumber}
           onClick={() => onPageNumberClick(pageNumber)}
           active={pageNumber === currentPage}
@@ -57,7 +57,7 @@ const PaginationElement = ({pagesCount,currentPage,setPageNum,alwaysShown = true
 
     if (!isPageNumberOutOfRange) {
       isPageNumberOutOfRange = true;
-      return <Pagination.Ellipsis key={pageNumber} className="muted" />;
+      return <Pagination.Ellipsis className="pagination-sm muted" key={pageNumber} disbled={true} />;
     }
 
     return null;
@@ -70,11 +70,13 @@ const PaginationElement = ({pagesCount,currentPage,setPageNum,alwaysShown = true
       {isPaginationShown && (
         <Pagination>
           <Pagination.Prev
+            className="pagination-sm"
             onClick={onPreviousPageClick}
             disabled={isCurrentPageFirst}
           />
           {pageNumbers}
           <Pagination.Next
+            className="pagination-sm"
             onClick={onNextPageClick}
             disabled={isCurrentPageLast}
           />

@@ -7,12 +7,8 @@ const PageSizeForm = ({setPageSize}) => {
             onChange={(e) => setPageSize(e.target.value)}
             className='form-inline form-control-sm'
             >
-            <option value={20}>Show 20</option>
-            <option value={40}>Show 40</option>
-            <option value={60}>Show 60</option>
-            <option value={80}>Show 80</option>
-            <option value={100}>Show 100</option>
-
+            <option value={25}>Show 25</option>
+            <option value={50}>Show 50</option>
         </Form.Control>
     )
 }
