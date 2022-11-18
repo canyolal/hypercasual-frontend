@@ -1,16 +1,15 @@
 import React from 'react'
-import Alert from 'react-bootstrap/Alert'
+import { Toast, ToastContainer } from 'react-bootstrap'
 
-const Notification = ({ message }) => {
+const Notification = ({ message, title, status }) => {
   if (message !== null) {
     return (
-      <Alert>
-        {message}
-      </Alert>
+      <ToastContainer position='top-end'>
+        <Toast bg={status}>
+          <Toast.Body>{message}</Toast.Body>
+        </Toast>
+      </ToastContainer>
     )
-  }
-  else {
-    return null
   }
 }
 
